@@ -1,0 +1,143 @@
+import 'dart:convert';
+
+import 'package:simple_block_markup_language/sbml_parser.dart';
+
+///
+/// Block of Simple Block Markup Language.
+///
+/// Author Masahide Mori
+///
+/// First edition creation date 2022-7-10 12:57:46
+///
+class SBMLBlock {
+  final int serial;
+  final int parentSerial;
+  final int nestLevel;
+  final String type;
+  final Map<String, String> params;
+  String content;
+
+  // 行番号は変換途中で確定する。
+  int? lineStart;
+  int? lineEnd;
+
+  // グラフの探索をさせたい時に使う子のシリアルのリスト。
+  List<int> children;
+
+  /// * [serial] : The block serial number. The value is 0 or over.
+  /// This value is not permanent as it is automatically set in the order
+  /// in which it was parsed.
+  /// * [parentSerial] : The parent block serial number.
+  /// If parent is root, this is -1. If root, this is -2.
+  /// * [nestLevel] : The block nest level. If root, this is -1.
+  /// * [type] : The block type.
+  /// The name that root and esc cannot be defined because they are reserved.
+  /// * [params] : Block parameter.
+  /// * [content] : The block content.
+  /// * [lineStart] : Line number of block start position.
+  /// This is a parameter for the parser and is usually not manipulated.
+  /// * [lineEnd] : line number of block end position.
+  /// This is a parameter for the parser and is usually not manipulated.
+  /// The line length == lineEnd - lineStart.
+  /// LineEnd == content line number last + 1.
+  /// * [children] : This is a list of child serial numbers.
+  /// This is usually used when searching in the builder.
+  /// The order of the child blocks is as shown in this list.
+  SBMLBlock(this.serial, this.parentSerial, this.nestLevel, this.type,
+      this.params, this.content,
+      {this.lineStart, this.lineEnd, List<int>? children})
+      : children = children ?? [];
+
+  /// deep copy
+  SBMLBlock deepCopy() {
+    return SBMLBlock(
+        serial, parentSerial, nestLevel, type, {...params}, content,
+        lineStart: lineStart, lineEnd: lineEnd, children: [...children]);
+  }
+
+  /// copy with override parameters.
+  SBMLBlock copyWith(int? lineStart, int? lineEnd,
+      {int? serial,
+      int? parentSerial,
+      int? nestLevel,
+      String? type,
+      Map<String, String>? params,
+      String? content,
+      List<int>? children}) {
+    return SBMLBlock(
+        serial ?? this.serial,
+        parentSerial ?? this.parentSerial,
+        nestLevel ?? this.nestLevel,
+        type ?? this.type,
+        params ?? {...this.params},
+        content ?? this.content,
+        lineStart: lineStart,
+        lineEnd: lineEnd,
+        children: children ?? [...this.children]);
+  }
+
+  /// to Map object
+  Map<String, dynamic> toDict() {
+    return {
+      "serial": serial,
+      "parentSerial": parentSerial,
+      "nestLevel": nestLevel,
+      "type": type,
+      "params": params,
+      "content": content,
+      "lineStart": lineStart,
+      "lineEnd": lineEnd,
+      "children": children
+    };
+  }
+
+  /// get nest level code text.
+  String _getNestCode() {
+    String r = "";
+    for (int i = 0; i < nestLevel; i++) {
+      r += SBMLParser.indentationCode;
+    }
+    return r;
+  }
+
+  /// return escaped text.
+  String _escape(String s) {
+    return s
+        .replaceAll(SBMLParser.escape, SBMLParser.escapeESC)
+        .replaceAll(SBMLParser.paramStart, SBMLParser.paramStartESC)
+        .replaceAll(SBMLParser.paramEnd, SBMLParser.paramEndESC)
+        .replaceAll(SBMLParser.separate, SBMLParser.separateESC)
+        .replaceAll(SBMLParser.paramSeparate, SBMLParser.paramSeparateESC)
+        .replaceAll(SBMLParser.space, SBMLParser.spaceESC)
+        .replaceAll(SBMLParser.spaceJP, SBMLParser.spaceJPESC);
+  }
+
+  /// Convert to SBML.
+  List<String> toSBML() {
+    List<String> r = [];
+    // 最初のパラメータ込みの行を作成する。
+    List<String> contentLines = const LineSplitter().convert(content);
+    String firstLine = _getNestCode() + SBMLParser.paramStart + type;
+    for (String i in params.keys) {
+      firstLine += SBMLParser.paramSeparate;
+      firstLine += _escape(i);
+      firstLine += SBMLParser.separate;
+      firstLine += _escape(params[i]!);
+    }
+    firstLine += SBMLParser.paramEnd;
+    if (contentLines.isNotEmpty) {
+      firstLine += contentLines.removeAt(0);
+    }
+    r.add(firstLine);
+    // コンテンツ行がまだあれば追加。
+    // ここでは、条件によってはエスケープが必要になる。
+    for (String i in contentLines) {
+      if (i.startsWith(SBMLParser.paramStartRE)) {
+        r.add(SBMLParser.escapeLine + i);
+      } else {
+        r.add(i);
+      }
+    }
+    return r;
+  }
+}
