@@ -1,3 +1,8 @@
+# simple_block_markup_language
+
+(en)Japanese ver is [here](https://github.com/MasahideMori-SimpleAppli/simple_block_markup_language/blob/main/README_JA.md).  
+(ja)この解説の日本語版は[ここ](https://github.com/MasahideMori-SimpleAppli/simple_widget_markup_language/blob/main/README_JA.md)にあります。
+
 ## Overview
 This package contains a working implementation of Simple Block Markup Language (SBML).
 SBML is a simple markup language that describes block elements in an easy-to-see format.
@@ -130,6 +135,7 @@ The C part will be changed at the time of version upgrade.
   - X.C.X
 - Minor changes and bug fixes.
   - X.X.C
+
 If the version is less than 1, there may be major corrections and changes regardless of the above.
 
 ## License
