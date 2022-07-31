@@ -2,6 +2,8 @@
 This package contains a working implementation of Simple Block Markup Language (SBML).
 SBML is a simple markup language that describes block elements in an easy-to-see format.
 Files output in this format have the extension .sbml.
+Character encoding always uses UTF-8.
+Line feed code always uses LF (Line Feed).
 
 ## Usage
 ### Description method
@@ -42,6 +44,7 @@ To write a + sign, parentheses, commas, backslashes, etc. as parameter values, w
 Note that if you write directly as text in the code instead of reading the file,  
 the backslash itself will be you will need one extra to receive the Dart escape.
 As an exception, if you want to include a line in the content area that begins with a combination of a + sign and parentheses, write (esc) at the beginning.
+Note that type, parameter keys and parameter values cannot contain line feed.
 ```
 (a, b:c\\ cc, d:eee)abcdef
 +(f)ghijklmn

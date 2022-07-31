@@ -36,21 +36,42 @@ class SBMLBuilder {
     _maxSerial = _defMaxSerial;
   }
 
+  ///　Checks if the parameter contains newlines
+  ///　and throws an exception if it does.
+  ///
+  /// * [params] : Block parameter.
+  void _checkParams(Map<String, String> params) {
+    for (String i in params.keys) {
+      if (i.contains(SBMLParser.newLineCode) ||
+          params[i]!.contains(SBMLParser.newLineCode)) {
+        throw SBMLException(EnumSBMLExceptionType.illegalArgException, null,
+            detail: "The parameter keys and values cannot contain line feed.");
+      }
+    }
+  }
+
   /// Add block.
   ///
-  /// * [type] : The block type.
-  /// * [params] : Block parameter.
+  /// * [type] : The block type. The type cannot contain line feed.
+  /// * [params] : Block parameter. The parameter keys and values cannot contain line feed.
   /// * [content] : The block content.
   /// * [parentSerial] : The parent block serial number.
   /// If parent is root, this is -1. This value must be -1 or greater.
   ///
   /// Throws [EnumSBMLExceptionType.nonExistSerialException]
+  ///
+  /// Throws [EnumSBMLExceptionType.illegalArgException]
   void add(String type, Map<String, String> params, String content,
       {int parentSerial = -1}) {
     if (parentSerial < -1) {
       throw SBMLException(EnumSBMLExceptionType.illegalArgException, null,
           detail: "The parentSerial must be -1 or greater");
     }
+    if (type.contains(SBMLParser.newLineCode)) {
+      throw SBMLException(EnumSBMLExceptionType.illegalArgException, null,
+          detail: "The type cannot contain line feed.");
+    }
+    _checkParams(params);
     if (_blockMap.containsKey(parentSerial)) {
       final int nowSerial = _maxSerial + 1;
       _maxSerial = nowSerial;
@@ -67,13 +88,15 @@ class SBMLBuilder {
   /// Set block.
   ///
   /// * [serial] : This block serial. Must be 0 or greater.
-  /// * [type] : The block type.
-  /// * [params] : Block parameter.
+  /// * [type] : The block type. The type cannot contain line feed.
+  /// * [params] : Block parameter. The parameter keys and values cannot contain line feed.
   /// * [content] : The block content.
   /// * [parentSerial] : The parent block serial number.
   /// If parent is root, this is -1.
   ///
   /// Throws [EnumSBMLExceptionType.nonExistSerialException]
+  ///
+  /// Throws [EnumSBMLExceptionType.illegalArgException]
   void set(int serial, String type, Map<String, String> params, String content,
       {int parentSerial = -1}) {
     if (serial < 0) {
@@ -84,6 +107,11 @@ class SBMLBuilder {
       throw SBMLException(EnumSBMLExceptionType.illegalArgException, null,
           detail: "The parentSerial must be -1 or greater");
     }
+    if (type.contains(SBMLParser.newLineCode)) {
+      throw SBMLException(EnumSBMLExceptionType.illegalArgException, null,
+          detail: "The type cannot contain line feed.");
+    }
+    _checkParams(params);
     if (_blockMap.containsKey(parentSerial)) {
       if (_maxSerial < serial) {
         _maxSerial = serial;

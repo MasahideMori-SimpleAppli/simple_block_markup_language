@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:simple_block_markup_language/sbml_block.dart';
 import 'package:simple_block_markup_language/sbml_builder.dart';
+import 'package:simple_block_markup_language/sbml_exception.dart';
 
 void main() {
   test('run SBMLBuilder test', () {
@@ -58,5 +59,31 @@ void main() {
     b2.set(1, "typeB", {"parameterB": "B"}, "Content Text");
     b2.set(2, "typeC", {"parameterC": "C"}, "Content Text", parentSerial: 1);
     expect(b1.build() == b2.build(), true);
+    // input check test
+    try {
+      b2.add("a\na", {}, "aaa");
+    } catch (e) {
+      expect(e is SBMLException, true);
+    }
+    try {
+      b2.add("a", {"aaaaaa": "a\naa"}, "aaa");
+    } catch (e) {
+      expect(e is SBMLException, true);
+    }
+    try {
+      b2.add("a", {"aaa\naaa": "aaa"}, "aaa");
+    } catch (e) {
+      expect(e is SBMLException, true);
+    }
+    try {
+      b2.set(0, "a", {"aaaaaa": "a\naa"}, "aaa");
+    } catch (e) {
+      expect(e is SBMLException, true);
+    }
+    try {
+      b2.set(0, "a", {"aaa\naaa": "aaa"}, "aaa");
+    } catch (e) {
+      expect(e is SBMLException, true);
+    }
   });
 }
