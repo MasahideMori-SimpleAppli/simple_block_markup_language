@@ -1,7 +1,7 @@
 # simple_block_markup_language
 
-(en)Japanese ver is [here](https://github.com/MasahideMori-SimpleAppli/simple_block_markup_language/blob/main/README_JA.md).  
-(ja)この解説の日本語版は[ここ](https://github.com/MasahideMori-SimpleAppli/simple_widget_markup_language/blob/main/README_JA.md)にあります。
+(en)Japanese ver is [here](https://github.com/MasahideMori-SimpleAppli/simple_block_markup_language/blob/main/flutter/README_JA.md).  
+(ja)この解説の日本語版は[ここ](https://github.com/MasahideMori-SimpleAppli/simple_block_markup_language/blob/main/flutter/README_JA.md)にあります。
 
 ## Overview
 This package contains a working implementation of Simple Block Markup Language (SBML).
