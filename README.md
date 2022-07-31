@@ -71,6 +71,7 @@ The C part will be changed at the time of version upgrade.
   - X.C.X
 - Minor changes and bug fixes.
   - X.X.C
+If the version is less than 1, there may be major corrections and changes regardless of the above.
 
 ## License
 This software is released under the MIT License, see LICENSE file.

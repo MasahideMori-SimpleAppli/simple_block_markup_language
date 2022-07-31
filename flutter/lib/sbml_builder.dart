@@ -38,14 +38,19 @@ class SBMLBuilder {
 
   /// Add block.
   ///
-  /// * [parentSerial] : The parent block serial number. If parent is root, this is -1.
   /// * [type] : The block type.
   /// * [params] : Block parameter.
   /// * [content] : The block content.
+  /// * [parentSerial] : The parent block serial number.
+  /// If parent is root, this is -1. This value must be -1 or greater.
   ///
   /// Throws [EnumSBMLExceptionType.nonExistSerialException]
-  void add(int parentSerial, String type, Map<String, String> params,
-      String content) {
+  void add(String type, Map<String, String> params, String content,
+      {int parentSerial = -1}) {
+    if (parentSerial < -1) {
+      throw SBMLException(EnumSBMLExceptionType.illegalArgException, null,
+          detail: "The parentSerial must be -1 or greater");
+    }
     if (_blockMap.containsKey(parentSerial)) {
       final int nowSerial = _maxSerial + 1;
       _maxSerial = nowSerial;
@@ -54,6 +59,40 @@ class SBMLBuilder {
           nowSerial, parentSerial, parent.nestLevel + 1, type, params, content);
       parent.children.add(nowSerial);
       _blockMap[nowSerial] = child;
+    } else {
+      throw SBMLException(EnumSBMLExceptionType.nonExistSerialException, null);
+    }
+  }
+
+  /// Set block.
+  ///
+  /// * [serial] : This block serial. Must be 0 or greater.
+  /// * [type] : The block type.
+  /// * [params] : Block parameter.
+  /// * [content] : The block content.
+  /// * [parentSerial] : The parent block serial number.
+  /// If parent is root, this is -1.
+  ///
+  /// Throws [EnumSBMLExceptionType.nonExistSerialException]
+  void set(int serial, String type, Map<String, String> params, String content,
+      {int parentSerial = -1}) {
+    if (serial < 0) {
+      throw SBMLException(EnumSBMLExceptionType.illegalArgException, null,
+          detail: "The serial must be 0 or greater");
+    }
+    if (parentSerial < -1) {
+      throw SBMLException(EnumSBMLExceptionType.illegalArgException, null,
+          detail: "The parentSerial must be -1 or greater");
+    }
+    if (_blockMap.containsKey(parentSerial)) {
+      if (_maxSerial < serial) {
+        _maxSerial = serial;
+      }
+      final SBMLBlock parent = _blockMap[parentSerial]!;
+      final SBMLBlock child = SBMLBlock(
+          serial, parentSerial, parent.nestLevel + 1, type, params, content);
+      parent.children.add(serial);
+      _blockMap[serial] = child;
     } else {
       throw SBMLException(EnumSBMLExceptionType.nonExistSerialException, null);
     }
@@ -290,7 +329,7 @@ class SBMLBuilder {
     }
     // 親シリアルを再構成したものを追加
     for (SBMLBlock i in updated) {
-      add(i.parentSerial, i.type, i.params, i.content);
+      add(i.type, i.params, i.content, parentSerial: i.parentSerial);
     }
   }
 

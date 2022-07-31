@@ -8,12 +8,13 @@ void main() {
         "(a)aaa\n+(b,key1:abc,key2:def)bbb\nccc\n(esc)(d)ddd\n+(e)eee\n++(f)fff\n(g)ggg";
     // 等価生成テスト
     SBMLBuilder builder = SBMLBuilder();
-    builder.add(-1, "a", {}, "aaa");
+    builder.add("a", {}, "aaa");
     // ここでは動的に作成するのでエスケープが要らない。
-    builder.add(0, "b", {"key1": "abc", "key2": "def"}, "bbb\nccc\n(d)ddd");
-    builder.add(0, "e", {}, "eee");
-    builder.add(2, "f", {}, "fff");
-    builder.add(-1, "g", {}, "ggg");
+    builder.add("b", {"key1": "abc", "key2": "def"}, "bbb\nccc\n(d)ddd",
+        parentSerial: 0);
+    builder.add("e", {}, "eee", parentSerial: 0);
+    builder.add("f", {}, "fff", parentSerial: 2);
+    builder.add("g", {}, "ggg");
     expect(builder.build(), base);
     List<SBMLBlock> e = builder.getUnderAllBlocks(2);
     builder.remove(2);
@@ -47,5 +48,15 @@ void main() {
     SBMLBuilder builder2 = SBMLBuilder();
     builder2.loadFromSBML(escaped);
     expect(builder2.build(), escaped);
+    // set Method test
+    SBMLBuilder b1 = SBMLBuilder();
+    b1.add("typeA", {"parameterA": "A"}, "Content Text");
+    b1.add("typeB", {"parameterB": "B"}, "Content Text");
+    b1.add("typeC", {"parameterC": "C"}, "Content Text", parentSerial: 1);
+    SBMLBuilder b2 = SBMLBuilder();
+    b2.set(0, "typeA", {"parameterA": "A"}, "Content Text");
+    b2.set(1, "typeB", {"parameterB": "B"}, "Content Text");
+    b2.set(2, "typeC", {"parameterC": "C"}, "Content Text", parentSerial: 1);
+    expect(b1.build() == b2.build(), true);
   });
 }

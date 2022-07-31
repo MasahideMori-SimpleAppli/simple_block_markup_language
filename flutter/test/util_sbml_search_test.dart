@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:simple_block_markup_language/enum_sbml_logical_operator.dart';
 import 'package:simple_block_markup_language/enum_sbml_operator.dart';
 import 'package:simple_block_markup_language/sbml_block.dart';
+import 'package:simple_block_markup_language/sbml_builder.dart';
 import 'package:simple_block_markup_language/sbml_parser.dart';
 import 'package:simple_block_markup_language/sbml_search_param.dart';
 import 'package:simple_block_markup_language/sbml_searcher.dart';
@@ -102,5 +103,44 @@ void main() {
     List<SBMLBlock>? r9 = UtilSBMLSearch.blockNestLevel(
         target3, [sc9], EnumSBMLLogicalOperator.opAnd);
     expect(r9![0].content, "bbb");
+    // for main test
+    // create block
+    SBMLBuilder b1 = SBMLBuilder();
+    b1.add("typeA", {"parameter": "A"}, "Content Text A");
+    b1.add("typeB", {"parameter": "B"}, "Content Text B");
+    b1.add("typeC", {"parameter": "C"}, "Content Text C", parentSerial: 1);
+    SBMLBuilder b2 = SBMLBuilder();
+    b2.set(0, "typeA", {"parameter": "A"}, "Content Text A");
+    b2.set(1, "typeB", {"parameter": "B"}, "Content Text B");
+    b2.set(2, "typeC", {"parameter": "C"}, "Content Text C", parentSerial: 1);
+    expect(b1.build() == b2.build(), true);
+    // search block by type.
+    List<SBMLBlock>? s1 =
+        UtilSBMLSearch.blockType(b1.getBlockList(), ["typeC"]);
+    expect(s1![0].type, "typeC");
+    // search block by nest level.
+    List<SBMLSearchParam> sp1 = [SBMLSearchParam(EnumSBMLOperator.equal, 1)];
+    List<SBMLBlock>? s2 = UtilSBMLSearch.blockNestLevel(
+        b1.getBlockList(),
+        [SBMLSearcher(sp1, EnumSBMLLogicalOperator.opAnd)],
+        EnumSBMLLogicalOperator.opAnd);
+    expect(s2![0].type, "typeC");
+    // search block by content
+    List<SBMLSearchParam> sp2 = [
+      SBMLSearchParam(EnumSBMLOperator.equal, "Content Text C")
+    ];
+    List<SBMLBlock>? s3 = UtilSBMLSearch.blockContent(
+        b1.getBlockList(),
+        [SBMLSearcher(sp2, EnumSBMLLogicalOperator.opAnd)],
+        EnumSBMLLogicalOperator.opAnd);
+    expect(s3![0].type, "typeC");
+    // search block by parameter
+    List<SBMLSearchParam> sp3 = [SBMLSearchParam(EnumSBMLOperator.equal, "C")];
+    List<SBMLBlock>? s4 = UtilSBMLSearch.blockParams(
+        b1.getBlockList(),
+        "parameter",
+        [SBMLSearcher(sp3, EnumSBMLLogicalOperator.opAnd)],
+        EnumSBMLLogicalOperator.opAnd);
+    expect(s4![0].type, "typeC");
   });
 }
