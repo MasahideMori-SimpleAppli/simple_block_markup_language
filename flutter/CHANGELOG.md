@@ -1,3 +1,7 @@
+## 0.0.4
+* Tighter value checking for builder add and set methods.
+* Changed the parser to throw an syntax error instead of ignoring the first line esc tag.
+
 ## 0.0.3
 * Enhanced validation of input values for add and set methods in the SBMLBuilder class.
 

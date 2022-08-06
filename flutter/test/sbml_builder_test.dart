@@ -62,26 +62,52 @@ void main() {
     // input check test
     try {
       b2.add("a\na", {}, "aaa");
+      expect(false, true);
     } catch (e) {
       expect(e is SBMLException, true);
     }
     try {
       b2.add("a", {"aaaaaa": "a\naa"}, "aaa");
+      expect(false, true);
     } catch (e) {
       expect(e is SBMLException, true);
     }
     try {
       b2.add("a", {"aaa\naaa": "aaa"}, "aaa");
+      expect(false, true);
     } catch (e) {
       expect(e is SBMLException, true);
     }
     try {
       b2.set(0, "a", {"aaaaaa": "a\naa"}, "aaa");
+      expect(false, true);
     } catch (e) {
       expect(e is SBMLException, true);
     }
     try {
       b2.set(0, "a", {"aaa\naaa": "aaa"}, "aaa");
+      expect(false, true);
+    } catch (e) {
+      expect(e is SBMLException, true);
+    }
+    try {
+      b2.add("esc", {"a": "a"}, "aaa");
+      expect(false, true);
+    } catch (e) {
+      expect(e is SBMLException, true);
+    }
+    try {
+      b2.add("root", {"a": "a"}, "aaa");
+      expect(false, true);
+    } catch (e) {
+      expect(e is SBMLException, true);
+    }
+    // SyntaxError check test.
+    try {
+      const String eStr = "(esc)aaa\n(b)bbb";
+      SBMLBuilder b3 = SBMLBuilder();
+      b3.loadFromSBML(eStr);
+      expect(false, true);
     } catch (e) {
       expect(e is SBMLException, true);
     }

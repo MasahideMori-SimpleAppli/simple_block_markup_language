@@ -19,6 +19,7 @@ class SBMLParser {
   static const space = " ";
   static const spaceJP = "　";
   static const escape = "\\";
+
   // escaped
   static const paramStartESC = "\\(";
   static const paramEndESC = "\\)";
@@ -66,6 +67,8 @@ class SBMLParser {
       if (line.startsWith(escapeLine)) {
         if (r.isNotEmpty) {
           r.last.content += "\n${_split(line, paramEnd)[1]}";
+        } else {
+          throw SBMLException(EnumSBMLExceptionType.syntaxException, nowLine);
         }
         continue;
       }

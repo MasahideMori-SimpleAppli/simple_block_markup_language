@@ -57,6 +57,9 @@ Note that type, parameter keys and parameter values cannot contain line feed.
 +(g)vwxyz
 ```
 
+### Reserved word
+Regarding types, esc and root are reserved and cannot be used.
+
 ### Flutter code sample
 The add method automatically assigns a serial number that increases by one.
 If you want to assign manually, use the set method.
