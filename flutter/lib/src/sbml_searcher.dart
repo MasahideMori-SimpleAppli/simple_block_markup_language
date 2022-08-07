@@ -1,5 +1,5 @@
-import 'package:simple_block_markup_language/enum_sbml_logical_operator.dart';
-import 'package:simple_block_markup_language/sbml_search_param.dart';
+import 'enum_sbml_logical_operator.dart';
+import 'sbml_search_param.dart';
 
 ///
 /// This class is an SBML search information class.

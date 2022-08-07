@@ -1,5 +1,5 @@
-import 'package:simple_block_markup_language/enum_sbml_operator.dart';
-import 'package:simple_block_markup_language/sbml_exception.dart';
+import 'enum_sbml_operator.dart';
+import 'sbml_exception.dart';
 
 ///
 /// This class is an SBML search parameter class.

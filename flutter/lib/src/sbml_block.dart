@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:simple_block_markup_language/sbml_parser.dart';
+import 'sbml_parser.dart';
 
 ///
 /// Block of Simple Block Markup Language.

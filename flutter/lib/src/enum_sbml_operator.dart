@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:simple_block_markup_language/sbml_exception.dart';
+
+import 'sbml_exception.dart';
 
 enum EnumSBMLOperator {
   // <

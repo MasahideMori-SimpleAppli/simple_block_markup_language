@@ -1,7 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:simple_block_markup_language/sbml_block.dart';
-import 'package:simple_block_markup_language/sbml_builder.dart';
-import 'package:simple_block_markup_language/sbml_exception.dart';
+import 'package:simple_block_markup_language/sbml.dart';
 
 void main() {
   test('run SBMLBuilder test', () {

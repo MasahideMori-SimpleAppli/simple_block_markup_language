@@ -1,6 +1,6 @@
-import 'package:simple_block_markup_language/sbml_block.dart';
-import 'package:simple_block_markup_language/sbml_exception.dart';
-import 'package:simple_block_markup_language/sbml_parser.dart';
+import 'sbml_block.dart';
+import 'sbml_exception.dart';
+import 'sbml_parser.dart';
 
 ///
 /// This class is for building and operating SBML.

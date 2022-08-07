@@ -1,7 +1,7 @@
-import 'package:simple_block_markup_language/enum_sbml_logical_operator.dart';
-import 'package:simple_block_markup_language/sbml_block.dart';
-import 'package:simple_block_markup_language/sbml_exception.dart';
-import 'package:simple_block_markup_language/sbml_searcher.dart';
+import 'enum_sbml_logical_operator.dart';
+import 'sbml_block.dart';
+import 'sbml_exception.dart';
+import 'sbml_searcher.dart';
 
 ///
 /// A utility for searching in SBML data.
