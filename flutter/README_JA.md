@@ -65,7 +65,7 @@ add メソッドは、1 ずつ増加するシリアル番号を自動的に割�
 付属のユーティリティを使用してブロックを検索することもできます。
 ```dart
 import 'package:flutter/material.dart';
-import 'package:simple_block_markup_language/sbml.dart';
+import 'package:simple_block_markup_language/simple_block_markup_language.dart';
 
 void main() {
   // create block

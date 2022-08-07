@@ -66,7 +66,7 @@ If you want to assign manually, use the set method.
 Blocks can also be searched using the included utility.
 ```dart
 import 'package:flutter/material.dart';
-import 'package:simple_block_markup_language/sbml.dart';
+import 'package:simple_block_markup_language/simple_block_markup_language.dart';
 
 void main() {
   // create block

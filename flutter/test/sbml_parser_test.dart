@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:simple_block_markup_language/sbml.dart';
+import 'package:simple_block_markup_language/simple_block_markup_language.dart';
 
 void main() {
   test('run SBMLParser test', () {
