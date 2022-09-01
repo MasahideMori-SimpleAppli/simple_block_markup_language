@@ -1,3 +1,6 @@
+## 0.0.6
+* Added return values to SBMLBuilder add and set methods.
+
 ## 0.0.5
 * Refactored package structure.
 

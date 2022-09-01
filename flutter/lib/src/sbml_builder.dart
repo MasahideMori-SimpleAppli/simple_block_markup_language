@@ -89,10 +89,12 @@ class SBMLBuilder {
   /// * [parentSerial] : The parent block serial number.
   /// If parent is root, this is -1. This value must be -1 or greater.
   ///
+  /// Returns: Added block.
+  ///
   /// Throws [EnumSBMLExceptionType.nonExistSerialException]
   ///
   /// Throws [EnumSBMLExceptionType.illegalArgException]
-  void add(String type, Map<String, String> params, String content,
+  SBMLBlock add(String type, Map<String, String> params, String content,
       {int parentSerial = -1}) {
     _checkTypeAndSerial(null, type, parentSerial);
     _checkParams(params);
@@ -104,6 +106,7 @@ class SBMLBuilder {
           nowSerial, parentSerial, parent.nestLevel + 1, type, params, content);
       parent.children.add(nowSerial);
       _blockMap[nowSerial] = child;
+      return child;
     } else {
       throw SBMLException(EnumSBMLExceptionType.nonExistSerialException, null);
     }
@@ -118,10 +121,13 @@ class SBMLBuilder {
   /// * [parentSerial] : The parent block serial number.
   /// If parent is root, this is -1.
   ///
+  /// Returns: Set block.
+  ///
   /// Throws [EnumSBMLExceptionType.nonExistSerialException]
   ///
   /// Throws [EnumSBMLExceptionType.illegalArgException]
-  void set(int serial, String type, Map<String, String> params, String content,
+  SBMLBlock set(
+      int serial, String type, Map<String, String> params, String content,
       {int parentSerial = -1}) {
     _checkTypeAndSerial(serial, type, parentSerial);
     _checkParams(params);
@@ -134,6 +140,7 @@ class SBMLBuilder {
           serial, parentSerial, parent.nestLevel + 1, type, params, content);
       parent.children.add(serial);
       _blockMap[serial] = child;
+      return child;
     } else {
       throw SBMLException(EnumSBMLExceptionType.nonExistSerialException, null);
     }
