@@ -4,9 +4,9 @@
 (ja)この解説の日本語版は[ここ](https://github.com/MasahideMori-SimpleAppli/simple_block_markup_language/blob/main/flutter/README_JA.md)にあります。
 
 ## Overview
-This package contains a working implementation of Simple Block Markup Language (SBML).
-SBML is a simple markup language that describes block elements in an easy-to-see format.
-Files output in this format have the extension .sbml.
+This package contains a working implementation of Simple Block Markup Language (SpBML).
+SpBML is a simple markup language that describes block elements in an easy-to-see format.
+Files output in this format have the extension .spbml.
 Character encoding always uses UTF-8.
 Line feed code always uses LF (Line Feed).
 
@@ -70,42 +70,42 @@ import 'package:simple_block_markup_language/simple_block_markup_language.dart';
 
 void main() {
   // create block
-  SBMLBuilder b1 = SBMLBuilder();
+  SpBMLBuilder b1 = SpBMLBuilder();
   b1.add("typeA", {"parameter": "A"}, "Content Text A");
   b1.add("typeB", {"parameter": "B"}, "Content Text B");
   b1.add("typeC", {"parameter": "C"}, "Content Text C", parentSerial: 1);
-  SBMLBuilder b2 = SBMLBuilder();
+  SpBMLBuilder b2 = SpBMLBuilder();
   b2.set(0, "typeA", {"parameter": "A"}, "Content Text A");
   b2.set(1, "typeB", {"parameter": "B"}, "Content Text B");
   b2.set(2, "typeC", {"parameter": "C"}, "Content Text C", parentSerial: 1);
   debugPrint(b1.build());
   debugPrint((b1.build() == b2.build()).toString());
   // search block by type.
-  List<SBMLBlock>? s1 = UtilSBMLSearch.blockType(b1.getBlockList(), ["typeC"]);
+  List<SpBMLBlock>? s1 = UtilSpBMLSearch.blockType(b1.getBlockList(), ["typeC"]);
   debugPrint((s1![0].type == "typeC").toString());
   // search block by nest level.
-  List<SBMLSearchParam> sp1 = [SBMLSearchParam(EnumSBMLOperator.equal, 1)];
-  List<SBMLBlock>? s2 = UtilSBMLSearch.blockNestLevel(
+  List<SpBMLSearchParam> sp1 = [SpBMLSearchParam(EnumSpBMLOperator.equal, 1)];
+  List<SpBMLBlock>? s2 = UtilSpBMLSearch.blockNestLevel(
           b1.getBlockList(),
-          [SBMLSearcher(sp1, EnumSBMLLogicalOperator.opAnd)],
-          EnumSBMLLogicalOperator.opAnd);
+          [SpBMLSearcher(sp1, EnumSpBMLLogicalOperator.opAnd)],
+          EnumSpBMLLogicalOperator.opAnd);
   debugPrint((s2![0].type == "typeC").toString());
   // search block by content
-  List<SBMLSearchParam> sp2 = [
-    SBMLSearchParam(EnumSBMLOperator.equal, "Content Text C")
+  List<SpBMLSearchParam> sp2 = [
+    SpBMLSearchParam(EnumSpBMLOperator.equal, "Content Text C")
   ];
-  List<SBMLBlock>? s3 = UtilSBMLSearch.blockContent(
+  List<SpBMLBlock>? s3 = UtilSpBMLSearch.blockContent(
           b1.getBlockList(),
-          [SBMLSearcher(sp2, EnumSBMLLogicalOperator.opAnd)],
-          EnumSBMLLogicalOperator.opAnd);
+          [SpBMLSearcher(sp2, EnumSpBMLLogicalOperator.opAnd)],
+          EnumSpBMLLogicalOperator.opAnd);
   debugPrint((s3![0].type == "typeC").toString());
   // search block by parameter
-  List<SBMLSearchParam> sp3 = [SBMLSearchParam(EnumSBMLOperator.equal, "C")];
-  List<SBMLBlock>? s4 = UtilSBMLSearch.blockParams(
+  List<SpBMLSearchParam> sp3 = [SpBMLSearchParam(EnumSpBMLOperator.equal, "C")];
+  List<SpBMLBlock>? s4 = UtilSpBMLSearch.blockParams(
           b1.getBlockList(),
           "parameter",
-          [SBMLSearcher(sp3, EnumSBMLLogicalOperator.opAnd)],
-          EnumSBMLLogicalOperator.opAnd);
+          [SpBMLSearcher(sp3, EnumSpBMLLogicalOperator.opAnd)],
+          EnumSpBMLLogicalOperator.opAnd);
   debugPrint((s4![0].type == "typeC").toString());
 }
 ```
@@ -119,10 +119,10 @@ This package is developed by me personally, but may be supported via the company
 Simple Block Markup Language
 
 ## Extension
-.sbml
+.spbml
 
 ## MIME Type (Temporary)
-text/x.sbml
+text/x.spbml
 
 ## About version control
 The C part will be changed at the time of version upgrade.

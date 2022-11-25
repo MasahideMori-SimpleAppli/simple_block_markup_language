@@ -1,30 +1,30 @@
-import 'enum_sbml_operator.dart';
-import 'sbml_exception.dart';
+import 'enum_spbml_operator.dart';
+import 'spbml_exception.dart';
 
 ///
-/// This class is an SBML search parameter class.
+/// This class is an SpBML search parameter class.
 ///
 /// Author Masahide Mori
 ///
 /// First edition creation date 2022-07-17 17:17:52
 ///
-class SBMLSearchParam {
-  static const String className = 'SBMLSearchParam';
+class SpBMLSearchParam {
+  static const String className = 'SpBMLSearchParam';
   static const String version = '1';
-  EnumSBMLOperator op;
+  EnumSpBMLOperator op;
   dynamic compV;
 
   /// Constructor
   /// * [op] : Compare operator.
   /// * [compV] : The compare value. it is number or String.
-  SBMLSearchParam(this.op, this.compV) {
+  SpBMLSearchParam(this.op, this.compV) {
     if (compV is! num && compV is! String) {
-      throw SBMLException(EnumSBMLExceptionType.illegalArgException, null);
+      throw SpBMLException(EnumSpBMLExceptionType.illegalArgException, null);
     }
   }
 
-  SBMLSearchParam deepCopy() {
-    return SBMLSearchParam(op, compV);
+  SpBMLSearchParam deepCopy() {
+    return SpBMLSearchParam(op, compV);
   }
 
   Map<String, dynamic> toDict() {
@@ -36,9 +36,9 @@ class SBMLSearchParam {
     return d;
   }
 
-  static SBMLSearchParam fromDict(Map<String, dynamic> src) {
-    return SBMLSearchParam(
-        EXTEnumSBMLOperator.fromStr(src['operator']), src['compareValue']);
+  static SpBMLSearchParam fromDict(Map<String, dynamic> src) {
+    return SpBMLSearchParam(
+        EXTEnumSpBMLOperator.fromStr(src['operator']), src['compareValue']);
   }
 
   /// Calculate.

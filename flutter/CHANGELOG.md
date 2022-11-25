@@ -1,3 +1,6 @@
+## 1.0.0
+* Change short name and extension, SBML to SpBML.
+
 ## 0.0.6
 * Added return values to SBMLBuilder add and set methods.
 

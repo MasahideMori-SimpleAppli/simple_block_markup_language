@@ -1,20 +1,20 @@
-import 'sbml_block.dart';
-import 'sbml_exception.dart';
-import 'sbml_parser.dart';
+import 'spbml_block.dart';
+import 'spbml_exception.dart';
+import 'spbml_parser.dart';
 
 ///
-/// This class is for building and operating SBML.
+/// This class is for building and operating SpBML.
 ///
 /// Author Masahide Mori
 ///
 /// First edition creation date 2022-07-16 17:47:57
 ///
-class SBMLBuilder {
+class SpBMLBuilder {
   // ブロック構造のデフォルト値
-  final SBMLBlock rootBlock = SBMLBlock(_baseSerial, -2, -1, "root", {}, "");
+  final SpBMLBlock rootBlock = SpBMLBlock(_baseSerial, -2, -1, "root", {}, "");
 
   // 保持しているブロック。キーがブロックシリアル、値がブロックの内容クラス。
-  late Map<int, SBMLBlock> _blockMap;
+  late Map<int, SpBMLBlock> _blockMap;
 
   // 基底のシリアル
   static const _baseSerial = -1;
@@ -26,7 +26,7 @@ class SBMLBuilder {
   int _maxSerial = _defMaxSerial;
 
   /// Constructor
-  SBMLBuilder() {
+  SpBMLBuilder() {
     _blockMap = {-1: rootBlock.deepCopy()};
   }
 
@@ -44,24 +44,24 @@ class SBMLBuilder {
   /// * [parentSerial] : The parent block serial number.
   /// If parent is root, this is -1. This value must be -1 or greater.
   ///
-  /// Throws [EnumSBMLExceptionType.nonExistSerialException]
+  /// Throws [EnumSpBMLExceptionType.nonExistSerialException]
   void _checkTypeAndSerial(int? serial, String type, int parentSerial) {
     if (serial != null) {
       if (serial < 0) {
-        throw SBMLException(EnumSBMLExceptionType.illegalArgException, null,
+        throw SpBMLException(EnumSpBMLExceptionType.illegalArgException, null,
             detail: "The serial must be 0 or greater");
       }
     }
     if (parentSerial < -1) {
-      throw SBMLException(EnumSBMLExceptionType.illegalArgException, null,
+      throw SpBMLException(EnumSpBMLExceptionType.illegalArgException, null,
           detail: "The parentSerial must be -1 or greater");
     }
-    if (type.contains(SBMLParser.newLineCode)) {
-      throw SBMLException(EnumSBMLExceptionType.illegalArgException, null,
+    if (type.contains(SpBMLParser.newLineCode)) {
+      throw SpBMLException(EnumSpBMLExceptionType.illegalArgException, null,
           detail: "The type cannot contain line feed.");
     }
     if (type == "root" || type == "esc") {
-      throw SBMLException(EnumSBMLExceptionType.illegalArgException, null,
+      throw SpBMLException(EnumSpBMLExceptionType.illegalArgException, null,
           detail:
               "Regarding types, esc and root are reserved and cannot be used.");
     }
@@ -73,9 +73,9 @@ class SBMLBuilder {
   /// * [params] : Block parameter.
   void _checkParams(Map<String, String> params) {
     for (String i in params.keys) {
-      if (i.contains(SBMLParser.newLineCode) ||
-          params[i]!.contains(SBMLParser.newLineCode)) {
-        throw SBMLException(EnumSBMLExceptionType.illegalArgException, null,
+      if (i.contains(SpBMLParser.newLineCode) ||
+          params[i]!.contains(SpBMLParser.newLineCode)) {
+        throw SpBMLException(EnumSpBMLExceptionType.illegalArgException, null,
             detail: "The parameter keys and values cannot contain line feed.");
       }
     }
@@ -91,24 +91,25 @@ class SBMLBuilder {
   ///
   /// Returns: Added block.
   ///
-  /// Throws [EnumSBMLExceptionType.nonExistSerialException]
+  /// Throws [EnumSpBMLExceptionType.nonExistSerialException]
   ///
-  /// Throws [EnumSBMLExceptionType.illegalArgException]
-  SBMLBlock add(String type, Map<String, String> params, String content,
+  /// Throws [EnumSpBMLExceptionType.illegalArgException]
+  SpBMLBlock add(String type, Map<String, String> params, String content,
       {int parentSerial = -1}) {
     _checkTypeAndSerial(null, type, parentSerial);
     _checkParams(params);
     if (_blockMap.containsKey(parentSerial)) {
       final int nowSerial = _maxSerial + 1;
       _maxSerial = nowSerial;
-      final SBMLBlock parent = _blockMap[parentSerial]!;
-      final SBMLBlock child = SBMLBlock(
+      final SpBMLBlock parent = _blockMap[parentSerial]!;
+      final SpBMLBlock child = SpBMLBlock(
           nowSerial, parentSerial, parent.nestLevel + 1, type, params, content);
       parent.children.add(nowSerial);
       _blockMap[nowSerial] = child;
       return child;
     } else {
-      throw SBMLException(EnumSBMLExceptionType.nonExistSerialException, null);
+      throw SpBMLException(
+          EnumSpBMLExceptionType.nonExistSerialException, null);
     }
   }
 
@@ -123,10 +124,10 @@ class SBMLBuilder {
   ///
   /// Returns: Set block.
   ///
-  /// Throws [EnumSBMLExceptionType.nonExistSerialException]
+  /// Throws [EnumSpBMLExceptionType.nonExistSerialException]
   ///
-  /// Throws [EnumSBMLExceptionType.illegalArgException]
-  SBMLBlock set(
+  /// Throws [EnumSpBMLExceptionType.illegalArgException]
+  SpBMLBlock set(
       int serial, String type, Map<String, String> params, String content,
       {int parentSerial = -1}) {
     _checkTypeAndSerial(serial, type, parentSerial);
@@ -135,26 +136,28 @@ class SBMLBuilder {
       if (_maxSerial < serial) {
         _maxSerial = serial;
       }
-      final SBMLBlock parent = _blockMap[parentSerial]!;
-      final SBMLBlock child = SBMLBlock(
+      final SpBMLBlock parent = _blockMap[parentSerial]!;
+      final SpBMLBlock child = SpBMLBlock(
           serial, parentSerial, parent.nestLevel + 1, type, params, content);
       parent.children.add(serial);
       _blockMap[serial] = child;
       return child;
     } else {
-      throw SBMLException(EnumSBMLExceptionType.nonExistSerialException, null);
+      throw SpBMLException(
+          EnumSpBMLExceptionType.nonExistSerialException, null);
     }
   }
 
   /// Reset target nest revel.
   /// It should be noted that the nesting level of the child does not change.
-  void _resetNestLevel(SBMLBlock target) {
+  void _resetNestLevel(SpBMLBlock target) {
     if (_blockMap.containsKey(target.parentSerial)) {
-      SBMLBlock tp = _blockMap[target.parentSerial]!;
+      SpBMLBlock tp = _blockMap[target.parentSerial]!;
       _blockMap[target.serial] =
           target.copyWith(null, null, nestLevel: tp.nestLevel + 1);
     } else {
-      throw SBMLException(EnumSBMLExceptionType.nonExistSerialException, null);
+      throw SpBMLException(
+          EnumSpBMLExceptionType.nonExistSerialException, null);
     }
   }
 
@@ -163,41 +166,43 @@ class SBMLBuilder {
   /// The first block parent serial will change under the new parent block.
   ///
   /// * [parentSerial] : The parent block serial number. If parent is root, this is -1.
-  /// * [blocks] : The SBMLBlocks get from getUnderAllBlocks. this method is not change block serials.
+  /// * [blocks] : The SpBMLBlocks get from getUnderAllBlocks. this method is not change block serials.
   ///
-  /// Throws [EnumSBMLExceptionType.nonExistSerialException]
-  void reinsert(int parentSerial, List<SBMLBlock> blocks) {
+  /// Throws [EnumSpBMLExceptionType.nonExistSerialException]
+  void reinsert(int parentSerial, List<SpBMLBlock> blocks) {
     if (blocks.isEmpty) {
       return;
     }
     if (_blockMap.containsKey(parentSerial)) {
-      SBMLBlock parent = _blockMap[parentSerial]!;
+      SpBMLBlock parent = _blockMap[parentSerial]!;
       final int parentNestLevel = parent.nestLevel;
-      List<SBMLBlock> blocksCopy = [...blocks];
+      List<SpBMLBlock> blocksCopy = [...blocks];
       // override parent serial.
-      SBMLBlock firstBlock = blocksCopy.removeAt(0).copyWith(null, null,
+      SpBMLBlock firstBlock = blocksCopy.removeAt(0).copyWith(null, null,
           parentSerial: parentSerial, nestLevel: parentNestLevel + 1);
       blocksCopy.insert(0, firstBlock);
       parent.children.add(blocksCopy[0].serial);
-      for (SBMLBlock i in blocksCopy) {
+      for (SpBMLBlock i in blocksCopy) {
         _resetNestLevel(i);
       }
     } else {
-      throw SBMLException(EnumSBMLExceptionType.nonExistSerialException, null);
+      throw SpBMLException(
+          EnumSpBMLExceptionType.nonExistSerialException, null);
     }
   }
 
   /// internal remove. this is not remove target serial in parent children.
   void _remove(int serial) {
     if (_blockMap.containsKey(serial)) {
-      SBMLBlock t = _blockMap[serial]!;
+      SpBMLBlock t = _blockMap[serial]!;
       for (int i in [...t.children]) {
         // 再帰処理
         _remove(i);
       }
       _blockMap.remove(serial);
     } else {
-      throw SBMLException(EnumSBMLExceptionType.nonExistSerialException, null);
+      throw SpBMLException(
+          EnumSpBMLExceptionType.nonExistSerialException, null);
     }
   }
 
@@ -205,19 +210,19 @@ class SBMLBuilder {
   ///
   /// * [serial] : The target block serial.
   ///
-  /// Throws [EnumSBMLExceptionType.nonExistSerialException]
+  /// Throws [EnumSpBMLExceptionType.nonExistSerialException]
   void remove(int serial) {
     if (serial == _baseSerial) {
       // ここはクリアにしないと正しく初期化されないので注意。
       clear();
     } else {
-      SBMLBlock t = _blockMap[serial]!;
+      SpBMLBlock t = _blockMap[serial]!;
       if (_blockMap.containsKey(t.parentSerial)) {
-        SBMLBlock p = _blockMap[t.parentSerial]!;
+        SpBMLBlock p = _blockMap[t.parentSerial]!;
         p.children.remove(serial);
       } else {
-        throw SBMLException(
-            EnumSBMLExceptionType.nonExistSerialException, null);
+        throw SpBMLException(
+            EnumSpBMLExceptionType.nonExistSerialException, null);
       }
       _remove(serial);
     }
@@ -227,9 +232,9 @@ class SBMLBuilder {
   ///
   /// * [serial] : The target block serial.
   ///
-  /// Throws [EnumSBMLExceptionType.nonExistSerialException]
-  List<SBMLBlock> pop(int serial) {
-    List<SBMLBlock> r = getUnderAllBlocks(serial);
+  /// Throws [EnumSpBMLExceptionType.nonExistSerialException]
+  List<SpBMLBlock> pop(int serial) {
+    List<SpBMLBlock> r = getUnderAllBlocks(serial);
     remove(serial);
     return r;
   }
@@ -238,12 +243,13 @@ class SBMLBuilder {
   ///
   /// * [serial] : The target block serial.
   ///
-  /// Throws [EnumSBMLExceptionType.nonExistSerialException]
-  SBMLBlock getBlock(int serial) {
+  /// Throws [EnumSpBMLExceptionType.nonExistSerialException]
+  SpBMLBlock getBlock(int serial) {
     if (_blockMap.containsKey(serial)) {
       return _blockMap[serial]!;
     } else {
-      throw SBMLException(EnumSBMLExceptionType.nonExistSerialException, null);
+      throw SpBMLException(
+          EnumSpBMLExceptionType.nonExistSerialException, null);
     }
   }
 
@@ -252,11 +258,11 @@ class SBMLBuilder {
   /// * [serialA] : The target block serial.
   /// * [serialB] : The target block serial.
   ///
-  /// Throws [EnumSBMLExceptionType.nonExistSerialException]
+  /// Throws [EnumSpBMLExceptionType.nonExistSerialException]
   void exchangePositions(int serialA, int serialB) {
     if (_blockMap.containsKey(serialA) && _blockMap.containsKey(serialB)) {
-      final SBMLBlock blockA = _blockMap[serialA]!;
-      final SBMLBlock blockB = _blockMap[serialB]!;
+      final SpBMLBlock blockA = _blockMap[serialA]!;
+      final SpBMLBlock blockB = _blockMap[serialB]!;
       //　親ビューが同じかどうかで処理が変化する。
       if (blockA.parentSerial == blockB.parentSerial) {
         if (_blockMap.containsKey(blockA.parentSerial)) {
@@ -269,15 +275,15 @@ class SBMLBuilder {
           order.insert(indexB, blockA.serial);
           // ネストレベルは変化しない。
         } else {
-          throw SBMLException(
-              EnumSBMLExceptionType.nonExistSerialException, null,
+          throw SpBMLException(
+              EnumSpBMLExceptionType.nonExistSerialException, null,
               detail: "The parent serial not exist.");
         }
       } else {
         if (_blockMap.containsKey(blockA.parentSerial) &&
             _blockMap.containsKey(blockB.parentSerial)) {
-          final SBMLBlock aParent = _blockMap[blockA.parentSerial]!;
-          final SBMLBlock bParent = _blockMap[blockB.parentSerial]!;
+          final SpBMLBlock aParent = _blockMap[blockA.parentSerial]!;
+          final SpBMLBlock bParent = _blockMap[blockB.parentSerial]!;
           final List<int> orderA = aParent.children;
           final List<int> orderB = bParent.children;
           final int indexA = orderA.indexOf(blockA.serial);
@@ -291,29 +297,30 @@ class SBMLBuilder {
           _blockMap[blockB.serial] = blockB.copyWith(null, null,
               parentSerial: aParent.serial, nestLevel: bParent.nestLevel + 1);
           // 下位のネストレベルを再調整
-          List<SBMLBlock> blockAUnder = getUnderAllBlocks(blockA.serial);
-          for (SBMLBlock i in blockAUnder) {
+          List<SpBMLBlock> blockAUnder = getUnderAllBlocks(blockA.serial);
+          for (SpBMLBlock i in blockAUnder) {
             _resetNestLevel(i);
           }
-          List<SBMLBlock> blockBUnder = getUnderAllBlocks(blockB.serial);
-          for (SBMLBlock i in blockBUnder) {
+          List<SpBMLBlock> blockBUnder = getUnderAllBlocks(blockB.serial);
+          for (SpBMLBlock i in blockBUnder) {
             _resetNestLevel(i);
           }
         } else {
-          throw SBMLException(
-              EnumSBMLExceptionType.nonExistSerialException, null,
+          throw SpBMLException(
+              EnumSpBMLExceptionType.nonExistSerialException, null,
               detail: "The parent serial not exist.");
         }
       }
     } else {
-      throw SBMLException(EnumSBMLExceptionType.nonExistSerialException, null);
+      throw SpBMLException(
+          EnumSpBMLExceptionType.nonExistSerialException, null);
     }
   }
 
   /// internal getUnderAllBlocks.
-  void _getAllBlockSerials(int serial, List<SBMLBlock> blockRef) {
+  void _getAllBlockSerials(int serial, List<SpBMLBlock> blockRef) {
     if (_blockMap.containsKey(serial)) {
-      SBMLBlock target = _blockMap[serial]!;
+      SpBMLBlock target = _blockMap[serial]!;
       blockRef.add(target.deepCopy());
       // 子ブロックは必ず親ブロックの後にある。
       for (int i in target.children) {
@@ -321,7 +328,8 @@ class SBMLBuilder {
         _getAllBlockSerials(i, blockRef);
       }
     } else {
-      throw SBMLException(EnumSBMLExceptionType.nonExistSerialException, null);
+      throw SpBMLException(
+          EnumSpBMLExceptionType.nonExistSerialException, null);
     }
   }
 
@@ -329,20 +337,20 @@ class SBMLBuilder {
   ///
   /// * [serial] : The target block serial. The return blocks of top index is target serial block.
   ///
-  /// Throws [EnumSBMLExceptionType.nonExistSerialException]
-  List<SBMLBlock> getUnderAllBlocks(int serial) {
-    List<SBMLBlock> blockRef = [];
+  /// Throws [EnumSpBMLExceptionType.nonExistSerialException]
+  List<SpBMLBlock> getUnderAllBlocks(int serial) {
+    List<SpBMLBlock> blockRef = [];
     _getAllBlockSerials(serial, blockRef);
     return blockRef;
   }
 
-  /// Loads the contents from the SBML.
+  /// Loads the contents from the SpBML.
   ///
-  /// * [src] : The SBML.
-  void loadFromSBML(String src) {
+  /// * [src] : The SpBML.
+  void loadFromSpBML(String src) {
     clear();
-    final SBMLBlock root = _blockMap[-1]!;
-    for (SBMLBlock i in SBMLParser.run(src, isGraphMode: true)) {
+    final SpBMLBlock root = _blockMap[-1]!;
+    for (SpBMLBlock i in SpBMLParser.run(src, isGraphMode: true)) {
       _blockMap[i.serial] = i;
       if (i.parentSerial == -1) {
         root.children.add(i.serial);
@@ -354,8 +362,8 @@ class SBMLBuilder {
   /// Loads the contents from the list of blocks.
   /// The block nesting level and serial number are reconstructed with the first block as 0.
   ///
-  /// * [src] : The SBMLBlocks get from getUnderAllBlocks.
-  void loadFromBlockList(List<SBMLBlock> src) {
+  /// * [src] : The SpBMLBlocks get from getUnderAllBlocks.
+  void loadFromBlockList(List<SpBMLBlock> src) {
     clear();
     if (src.isEmpty) {
       return;
@@ -364,50 +372,51 @@ class SBMLBuilder {
     // key pre, value now serial.
     Map<int, int> preSerialMap = {src[0].parentSerial: -1};
     // 新しいシリアル番号をマッピング
-    for (SBMLBlock i in src) {
+    for (SpBMLBlock i in src) {
       preSerialMap[i.serial] = newSerial;
       newSerial += 1;
     }
-    List<SBMLBlock> updated = [];
+    List<SpBMLBlock> updated = [];
     newSerial = 0;
-    for (SBMLBlock i in src) {
+    for (SpBMLBlock i in src) {
       updated.add(i.copyWith(null, null,
           parentSerial: preSerialMap[i.parentSerial]!, children: []));
       newSerial += 1;
     }
     // 親シリアルを再構成したものを追加
-    for (SBMLBlock i in updated) {
+    for (SpBMLBlock i in updated) {
       add(i.type, i.params, i.content, parentSerial: i.parentSerial);
     }
   }
 
   /// Returns a list of blocks.
-  List<SBMLBlock> getBlockList() {
+  List<SpBMLBlock> getBlockList() {
     return List.from(_blockMap.values);
   }
 
   /// Returns raw block map.
-  Map<int, SBMLBlock> getBlockMap() {
+  Map<int, SpBMLBlock> getBlockMap() {
     return _blockMap;
   }
 
   /// Recursive process for build function.
   void _build(int serial, List<String> ref) {
     if (_blockMap.containsKey(serial)) {
-      SBMLBlock target = _blockMap[serial]!;
-      // SBMLに変換して情報を追加する。
-      ref.addAll(target.toSBML());
+      SpBMLBlock target = _blockMap[serial]!;
+      // SpBMLに変換して情報を追加する。
+      ref.addAll(target.toSpBML());
       // 子ブロックは必ず親ブロックの後にある。
       for (int i in target.children) {
         // 再帰処理
         _build(i, ref);
       }
     } else {
-      throw SBMLException(EnumSBMLExceptionType.nonExistSerialException, null);
+      throw SpBMLException(
+          EnumSpBMLExceptionType.nonExistSerialException, null);
     }
   }
 
-  /// Builds and returns SBML text.
+  /// Builds and returns SpBML text.
   ///
   String build() {
     List<String> r = [];

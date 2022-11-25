@@ -2,10 +2,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:simple_block_markup_language/simple_block_markup_language.dart';
 
 void main() {
-  test('run SBMLParser test', () {
+  test('run SpBMLParser test', () {
     const String base =
         "(a)aaa\n+(b,key1:abc,key2:def)bbb\nccc\n(esc)(d)ddd\n+(e)eee\n++(f)fff\n(g)ggg";
-    List<SBMLBlock> blocks = SBMLParser.run(base, isGraphMode: true);
+    List<SpBMLBlock> blocks = SpBMLParser.run(base, isGraphMode: true);
     expect(blocks[0].serial, 0);
     expect(blocks[1].serial, 1);
     expect(blocks[2].serial, 2);
@@ -54,7 +54,7 @@ void main() {
     // エスケープシーケンスのテスト
     const String escaped =
         "(a, escape: es\\\\cape, space: s\\ pace,comma: co\\,mma, colon\\::colon, brackets:brackets\\))aaa";
-    List<SBMLBlock> escBlocks = SBMLParser.run(escaped, isGraphMode: true);
+    List<SpBMLBlock> escBlocks = SpBMLParser.run(escaped, isGraphMode: true);
     expect(escBlocks[0].params["escape"], "es\\cape");
     expect(escBlocks[0].params["space"], "s pace");
     expect(escBlocks[0].params["comma"], "co,mma");
@@ -62,8 +62,8 @@ void main() {
     expect(escBlocks[0].params["brackets"], "brackets)");
     const String escBlockLine =
         "(a, b:c\\ cc, d:eee)abcdef\n+(f)ghijklmn\n(esc)+(f2)opqrstu\n+(g)vwxyz";
-    List<SBMLBlock> escBlockLines =
-        SBMLParser.run(escBlockLine, isGraphMode: true);
+    List<SpBMLBlock> escBlockLines =
+        SpBMLParser.run(escBlockLine, isGraphMode: true);
     expect(escBlockLines.length, 3);
     expect(escBlockLines[0].content, "abcdef");
     expect(escBlockLines[1].content, "ghijklmn\n+(f2)opqrstu");

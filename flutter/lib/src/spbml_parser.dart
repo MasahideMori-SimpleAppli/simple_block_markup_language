@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'sbml_block.dart';
-import 'sbml_exception.dart';
+import 'spbml_block.dart';
+import 'spbml_exception.dart';
 
 ///
 /// Parser of Simple Block Markup Language.
@@ -10,7 +10,7 @@ import 'sbml_exception.dart';
 ///
 /// First edition creation date 2022-7-10 13:25:00
 ///
-class SBMLParser {
+class SpBMLParser {
   // need escape in param field.
   static const paramStart = "(";
   static const paramEnd = ")";
@@ -40,19 +40,19 @@ class SBMLParser {
   static const indentationCode = "+";
   static final RegExp paramStartRE = RegExp(r'^\+*\(.*$');
 
-  /// (en)Returns a list of the results of parsing SBML.
-  /// (ja)SBMLをパースした結果のリストを返します。
+  /// (en)Returns a list of the results of parsing SpBML.
+  /// (ja)SpBMLをパースした結果のリストを返します。
   ///
-  /// * [src] : SBML text.
+  /// * [src] : SpBML text.
   /// * [isGraphMode] : If True, the list of children serials are stored in the parent.
   ///
   /// Returns A list of parsed results.
   ///
-  /// Throws [SBMLException] : If the structure is incorrect.
-  static List<SBMLBlock> run(String src, {bool isGraphMode = false}) {
+  /// Throws [SpBMLException] : If the structure is incorrect.
+  static List<SpBMLBlock> run(String src, {bool isGraphMode = false}) {
     // 改行単位で区切り、コメント行を除去してエレメント行を汎用クラスで返す。
     List<String> splited = const LineSplitter().convert(src);
-    List<SBMLBlock> r = [];
+    List<SpBMLBlock> r = [];
     int nowLine = 0;
     int serial = 0;
     // 基底のColのシリアルは-1。
@@ -68,7 +68,7 @@ class SBMLParser {
         if (r.isNotEmpty) {
           r.last.content += "\n${_split(line, paramEnd)[1]}";
         } else {
-          throw SBMLException(EnumSBMLExceptionType.syntaxException, nowLine);
+          throw SpBMLException(EnumSpBMLExceptionType.syntaxException, nowLine);
         }
         continue;
       }
@@ -89,7 +89,8 @@ class SBMLParser {
         final int preNestLevel = r.isNotEmpty ? r.last.nestLevel : 0;
         if (nowNestLevel > preNestLevel) {
           if (nowNestLevel - preNestLevel > 1) {
-            throw SBMLException(EnumSBMLExceptionType.levelException, nowLine);
+            throw SpBMLException(
+                EnumSpBMLExceptionType.levelException, nowLine);
           }
           // ネストレベルが今回から深くなっているならば、前回の要素が親。
           nowParentSerial.add(r.last.serial);
@@ -108,7 +109,7 @@ class SBMLParser {
           // 長さ2の場合は空のコンテンツ配列を追加する。
           paramsAndContent.add("");
         } else if (paramsAndContent.length < 2) {
-          throw SBMLException(EnumSBMLExceptionType.syntaxException, nowLine);
+          throw SpBMLException(EnumSpBMLExceptionType.syntaxException, nowLine);
         }
         String? type;
         Map<String, String> params = {};
@@ -119,7 +120,8 @@ class SBMLParser {
           p = _replaceAll(p, " ", "");
           p = _replaceAll(p, "　", "");
           if (p == empty) {
-            throw SBMLException(EnumSBMLExceptionType.syntaxException, nowLine);
+            throw SpBMLException(
+                EnumSpBMLExceptionType.syntaxException, nowLine);
           }
           if (isFirstParam) {
             //　エスケープを外して適用。
@@ -128,8 +130,8 @@ class SBMLParser {
           } else {
             List<String> keyValue = _split(p, separate);
             if (keyValue.length < 2) {
-              throw SBMLException(
-                  EnumSBMLExceptionType.syntaxException, nowLine);
+              throw SpBMLException(
+                  EnumSpBMLExceptionType.syntaxException, nowLine);
             } else {
               //　エスケープを外して適用。
               params[_removeEscapeCode(keyValue[0])] =
@@ -138,10 +140,11 @@ class SBMLParser {
           }
         }
         if (type == null) {
-          throw SBMLException(EnumSBMLExceptionType.typeNullException, nowLine);
+          throw SpBMLException(
+              EnumSpBMLExceptionType.typeNullException, nowLine);
         }
         // ブロック要素が確定するので要素を生成
-        r.add(SBMLBlock(serial, nowParentSerial.last, nowNestLevel, type,
+        r.add(SpBMLBlock(serial, nowParentSerial.last, nowNestLevel, type,
             params, paramsAndContent[2],
             lineStart: nowLine));
         // グラフモードが有効なら後で探索可能にする
@@ -166,6 +169,7 @@ class SBMLParser {
   }
 
   /// Escape-enabled split. Target character is always contain in return list.
+  /// * [src] : The source text.
   /// * [targetChar] : The length must be 1.
   /// * [targetCharAdd] : If true, Add target character to return list.
   /// * [isSplitOne] : If true, split only once.
@@ -221,6 +225,7 @@ class SBMLParser {
   }
 
   /// Escape-enabled replaceAll.
+  /// * [src] : The source text.
   /// * [targetChar] : The length must be 1.
   /// * [replaced] : The replaced character.
   static String _replaceAll(String src, String targetChar, String replaced) {
@@ -264,6 +269,7 @@ class SBMLParser {
   }
 
   /// Remove escape code.
+  /// * [src] : The source text.
   static String _removeEscapeCode(String src) {
     String r = "";
     bool isInEscape = false;

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'sbml_parser.dart';
+import 'spbml_parser.dart';
 
 ///
 /// Block of Simple Block Markup Language.
@@ -9,7 +9,7 @@ import 'sbml_parser.dart';
 ///
 /// First edition creation date 2022-7-10 12:57:46
 ///
-class SBMLBlock {
+class SpBMLBlock {
   final int serial;
   final int parentSerial;
   final int nestLevel;
@@ -43,20 +43,20 @@ class SBMLBlock {
   /// * [children] : This is a list of child serial numbers.
   /// This is usually used when searching in the builder.
   /// The order of the child blocks is as shown in this list.
-  SBMLBlock(this.serial, this.parentSerial, this.nestLevel, this.type,
+  SpBMLBlock(this.serial, this.parentSerial, this.nestLevel, this.type,
       this.params, this.content,
       {this.lineStart, this.lineEnd, List<int>? children})
       : children = children ?? [];
 
   /// deep copy
-  SBMLBlock deepCopy() {
-    return SBMLBlock(
+  SpBMLBlock deepCopy() {
+    return SpBMLBlock(
         serial, parentSerial, nestLevel, type, {...params}, content,
         lineStart: lineStart, lineEnd: lineEnd, children: [...children]);
   }
 
   /// copy with override parameters.
-  SBMLBlock copyWith(int? lineStart, int? lineEnd,
+  SpBMLBlock copyWith(int? lineStart, int? lineEnd,
       {int? serial,
       int? parentSerial,
       int? nestLevel,
@@ -64,7 +64,7 @@ class SBMLBlock {
       Map<String, String>? params,
       String? content,
       List<int>? children}) {
-    return SBMLBlock(
+    return SpBMLBlock(
         serial ?? this.serial,
         parentSerial ?? this.parentSerial,
         nestLevel ?? this.nestLevel,
@@ -95,7 +95,7 @@ class SBMLBlock {
   String _getNestCode() {
     String r = "";
     for (int i = 0; i < nestLevel; i++) {
-      r += SBMLParser.indentationCode;
+      r += SpBMLParser.indentationCode;
     }
     return r;
   }
@@ -103,28 +103,28 @@ class SBMLBlock {
   /// return escaped text.
   String _escape(String s) {
     return s
-        .replaceAll(SBMLParser.escape, SBMLParser.escapeESC)
-        .replaceAll(SBMLParser.paramStart, SBMLParser.paramStartESC)
-        .replaceAll(SBMLParser.paramEnd, SBMLParser.paramEndESC)
-        .replaceAll(SBMLParser.separate, SBMLParser.separateESC)
-        .replaceAll(SBMLParser.paramSeparate, SBMLParser.paramSeparateESC)
-        .replaceAll(SBMLParser.space, SBMLParser.spaceESC)
-        .replaceAll(SBMLParser.spaceJP, SBMLParser.spaceJPESC);
+        .replaceAll(SpBMLParser.escape, SpBMLParser.escapeESC)
+        .replaceAll(SpBMLParser.paramStart, SpBMLParser.paramStartESC)
+        .replaceAll(SpBMLParser.paramEnd, SpBMLParser.paramEndESC)
+        .replaceAll(SpBMLParser.separate, SpBMLParser.separateESC)
+        .replaceAll(SpBMLParser.paramSeparate, SpBMLParser.paramSeparateESC)
+        .replaceAll(SpBMLParser.space, SpBMLParser.spaceESC)
+        .replaceAll(SpBMLParser.spaceJP, SpBMLParser.spaceJPESC);
   }
 
-  /// Convert to SBML.
-  List<String> toSBML() {
+  /// Convert to SpBML.
+  List<String> toSpBML() {
     List<String> r = [];
     // 最初のパラメータ込みの行を作成する。
     List<String> contentLines = const LineSplitter().convert(content);
-    String firstLine = _getNestCode() + SBMLParser.paramStart + type;
+    String firstLine = _getNestCode() + SpBMLParser.paramStart + type;
     for (String i in params.keys) {
-      firstLine += SBMLParser.paramSeparate;
+      firstLine += SpBMLParser.paramSeparate;
       firstLine += _escape(i);
-      firstLine += SBMLParser.separate;
+      firstLine += SpBMLParser.separate;
       firstLine += _escape(params[i]!);
     }
-    firstLine += SBMLParser.paramEnd;
+    firstLine += SpBMLParser.paramEnd;
     if (contentLines.isNotEmpty) {
       firstLine += contentLines.removeAt(0);
     }
@@ -132,8 +132,8 @@ class SBMLBlock {
     // コンテンツ行がまだあれば追加。
     // ここでは、条件によってはエスケープが必要になる。
     for (String i in contentLines) {
-      if (i.startsWith(SBMLParser.paramStartRE)) {
-        r.add(SBMLParser.escapeLine + i);
+      if (i.startsWith(SpBMLParser.paramStartRE)) {
+        r.add(SpBMLParser.escapeLine + i);
       } else {
         r.add(i);
       }

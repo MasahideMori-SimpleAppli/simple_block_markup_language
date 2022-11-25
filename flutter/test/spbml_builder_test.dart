@@ -2,11 +2,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:simple_block_markup_language/simple_block_markup_language.dart';
 
 void main() {
-  test('run SBMLBuilder test', () {
+  test('run SpBMLBuilder test', () {
     const String base =
         "(a)aaa\n+(b,key1:abc,key2:def)bbb\nccc\n(esc)(d)ddd\n+(e)eee\n++(f)fff\n(g)ggg";
     // 等価生成テスト
-    SBMLBuilder builder = SBMLBuilder();
+    SpBMLBuilder builder = SpBMLBuilder();
     builder.add("a", {}, "aaa");
     // ここでは動的に作成するのでエスケープが要らない。
     builder.add("b", {"key1": "abc", "key2": "def"}, "bbb\nccc\n(d)ddd",
@@ -15,7 +15,7 @@ void main() {
     builder.add("f", {}, "fff", parentSerial: 2);
     builder.add("g", {}, "ggg");
     expect(builder.build(), base);
-    List<SBMLBlock> e = builder.getUnderAllBlocks(2);
+    List<SpBMLBlock> e = builder.getUnderAllBlocks(2);
     builder.remove(2);
     const String removed =
         "(a)aaa\n+(b,key1:abc,key2:def)bbb\nccc\n(esc)(d)ddd\n(g)ggg";
@@ -35,24 +35,24 @@ void main() {
     builder.loadFromBlockList(e);
     expect(builder.build(), reFormatted);
     builder.clear();
-    builder.loadFromSBML(reFormatted);
+    builder.loadFromSpBML(reFormatted);
     expect(builder.build(), reFormatted);
-    List<SBMLBlock> popBlocks = builder.pop(0);
+    List<SpBMLBlock> popBlocks = builder.pop(0);
     expect(builder.build(), "");
     builder.loadFromBlockList(popBlocks);
     expect(builder.build(), reFormatted);
     // エスケープシーケンスのテスト
     const String escaped =
         "(a,escape:es\\\\cape,space:s\\ pace,comma:co\\,mma,colon\\::colon,brackets:brackets\\))aaa";
-    SBMLBuilder builder2 = SBMLBuilder();
-    builder2.loadFromSBML(escaped);
+    SpBMLBuilder builder2 = SpBMLBuilder();
+    builder2.loadFromSpBML(escaped);
     expect(builder2.build(), escaped);
     // set Method test
-    SBMLBuilder b1 = SBMLBuilder();
+    SpBMLBuilder b1 = SpBMLBuilder();
     b1.add("typeA", {"parameterA": "A"}, "Content Text");
     b1.add("typeB", {"parameterB": "B"}, "Content Text");
     b1.add("typeC", {"parameterC": "C"}, "Content Text", parentSerial: 1);
-    SBMLBuilder b2 = SBMLBuilder();
+    SpBMLBuilder b2 = SpBMLBuilder();
     b2.set(0, "typeA", {"parameterA": "A"}, "Content Text");
     b2.set(1, "typeB", {"parameterB": "B"}, "Content Text");
     b2.set(2, "typeC", {"parameterC": "C"}, "Content Text", parentSerial: 1);
@@ -62,52 +62,52 @@ void main() {
       b2.add("a\na", {}, "aaa");
       expect(false, true);
     } catch (e) {
-      expect(e is SBMLException, true);
+      expect(e is SpBMLException, true);
     }
     try {
       b2.add("a", {"aaaaaa": "a\naa"}, "aaa");
       expect(false, true);
     } catch (e) {
-      expect(e is SBMLException, true);
+      expect(e is SpBMLException, true);
     }
     try {
       b2.add("a", {"aaa\naaa": "aaa"}, "aaa");
       expect(false, true);
     } catch (e) {
-      expect(e is SBMLException, true);
+      expect(e is SpBMLException, true);
     }
     try {
       b2.set(0, "a", {"aaaaaa": "a\naa"}, "aaa");
       expect(false, true);
     } catch (e) {
-      expect(e is SBMLException, true);
+      expect(e is SpBMLException, true);
     }
     try {
       b2.set(0, "a", {"aaa\naaa": "aaa"}, "aaa");
       expect(false, true);
     } catch (e) {
-      expect(e is SBMLException, true);
+      expect(e is SpBMLException, true);
     }
     try {
       b2.add("esc", {"a": "a"}, "aaa");
       expect(false, true);
     } catch (e) {
-      expect(e is SBMLException, true);
+      expect(e is SpBMLException, true);
     }
     try {
       b2.add("root", {"a": "a"}, "aaa");
       expect(false, true);
     } catch (e) {
-      expect(e is SBMLException, true);
+      expect(e is SpBMLException, true);
     }
     // SyntaxError check test.
     try {
       const String eStr = "(esc)aaa\n(b)bbb";
-      SBMLBuilder b3 = SBMLBuilder();
-      b3.loadFromSBML(eStr);
+      SpBMLBuilder b3 = SpBMLBuilder();
+      b3.loadFromSpBML(eStr);
       expect(false, true);
     } catch (e) {
-      expect(e is SBMLException, true);
+      expect(e is SpBMLException, true);
     }
   });
 }
