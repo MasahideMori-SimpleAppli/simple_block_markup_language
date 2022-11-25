@@ -3,9 +3,9 @@
 日本語版の解説です。
 
 ## 概要
-このパッケージには、Simple Block Markup Language (SBML) の実用的な実装が含まれています。
-SBMLは、ブロック要素を見やすい形式で記述する単純なマークアップ言語です。
-この形式で出力されるファイルの拡張子は .sbml です。
+このパッケージには、Simple Block Markup Language (SpBML) の実用的な実装が含まれています。
+SpBMLは、ブロック要素を見やすい形式で記述する単純なマークアップ言語です。
+この形式で出力されるファイルの拡張子は .spbml です。
 文字エンコーディングは常に UTF-8 を使用します。
 改行コードは常に LF (ラインフィード) を使用します。
 
@@ -68,10 +68,10 @@ opqrstu
 Simple Block Markup Language
 
 ## 拡張子
-.sbml
+.spbml
 
 ## MIME Type ( 仮 )
-text/x.sbml
+text/x.spbml
 
 ## バージョン管理について
 それぞれ、Cの部分が変更されます。

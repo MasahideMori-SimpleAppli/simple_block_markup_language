@@ -4,9 +4,9 @@
 (ja)この解説の日本語版は[ここ](https://github.com/MasahideMori-SimpleAppli/simple_block_markup_language/blob/main/README_JA.md)にあります。
 
 ## Overview
-This package contains a working implementation of Simple Block Markup Language (SBML).
-SBML is a simple markup language that describes block elements in an easy-to-see format.
-Files output in this format have the extension .sbml.
+This package contains a working implementation of Simple Block Markup Language (SpBML).
+SpBML is a simple markup language that describes block elements in an easy-to-see format.
+Files output in this format have the extension .spbml.
 Character encoding always uses UTF-8.
 Line feed code always uses LF (Line Feed).
 
@@ -69,10 +69,10 @@ This package is developed by me personally, but may be supported via the company
 Simple Block Markup Language
 
 ## Extension
-.sbml
+.spbml
 
 ## MIME Type (Temporary)
-text/x.sbml
+text/x.spbml
 
 ## About version control
 The C part will be changed at the time of version upgrade.
