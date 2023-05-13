@@ -1,3 +1,6 @@
+## 2.0.0
+* Supported Dart 3.
+
 ## 1.0.0
 * Change short name and extension, SBML to SpBML.
 
