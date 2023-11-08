@@ -81,7 +81,9 @@ class SpBMLBuilder {
     }
   }
 
-  /// Add block.
+  /// (en) Add block.
+  ///
+  /// (ja) ブロックを追加します。
   ///
   /// * [type] : The block type. The type cannot contain line feed.
   /// * [params] : Block parameter. The parameter keys and values cannot contain line feed.
@@ -113,7 +115,9 @@ class SpBMLBuilder {
     }
   }
 
-  /// Set block.
+  /// (en) Set block.
+  ///
+  /// (ja) 指定したシリアルナンバーを強制し、ブロックをセットします。
   ///
   /// * [serial] : This block serial. Must be 0 or greater.
   /// * [type] : The block type. The type cannot contain line feed.
@@ -161,9 +165,13 @@ class SpBMLBuilder {
     }
   }
 
-  /// Reinsert blocks. This should be called after the remove method call.
+  /// (en) Reinsert blocks. This should be called after the remove method call.
   /// The block nesting level is reconstructed with under the parent block.
   /// The first block parent serial will change under the new parent block.
+  ///
+  /// (ja) ブロックを再度挿入します。これは、remove メソッド呼び出しの後に呼び出す必要があります。
+  /// ブロックのネストレベルは親ブロックの下に再構築されます。
+  /// 最初のブロックの親シリアルは、新しい親ブロックの下で変更されます。
   ///
   /// * [parentSerial] : The parent block serial number. If parent is root, this is -1.
   /// * [blocks] : The SpBMLBlocks get from getUnderAllBlocks. this method is not change block serials.
@@ -206,7 +214,9 @@ class SpBMLBuilder {
     }
   }
 
-  /// Remove the block. The lower blocks are deleted together.
+  /// (en) Remove the block. The lower blocks are deleted together.
+  ///
+  /// (ja) ブロックを取り外します。 下位のブロックもまとめて削除されます。
   ///
   /// * [serial] : The target block serial.
   ///
@@ -228,7 +238,9 @@ class SpBMLBuilder {
     }
   }
 
-  /// Remove and return the removed all blocks.
+  /// (en) Remove all blocks and return the removed blocks.
+  ///
+  /// (ja) 全てのブロックを削除し、削除したブロックを返却します。
   ///
   /// * [serial] : The target block serial.
   ///
@@ -239,7 +251,9 @@ class SpBMLBuilder {
     return r;
   }
 
-  /// Get block that have a target serial.
+  /// (en) Get block that have a target serial.
+  ///
+  /// (ja) 対象のシリアルを持つブロックを取得します。
   ///
   /// * [serial] : The target block serial.
   ///
@@ -253,7 +267,9 @@ class SpBMLBuilder {
     }
   }
 
-  /// Exchange block positions.
+  /// (en) Exchange block positions.
+  ///
+  /// (ja) 2つの既存のブロックの位置を入れ替えます。
   ///
   /// * [serialA] : The target block serial.
   /// * [serialB] : The target block serial.
@@ -321,7 +337,7 @@ class SpBMLBuilder {
   void _getAllBlockSerials(int serial, List<SpBMLBlock> blockRef) {
     if (_blockMap.containsKey(serial)) {
       SpBMLBlock target = _blockMap[serial]!;
-      blockRef.add(target.deepCopy());
+      blockRef.add(target);
       // 子ブロックは必ず親ブロックの後にある。
       for (int i in target.children) {
         // 再帰処理
@@ -333,9 +349,12 @@ class SpBMLBuilder {
     }
   }
 
-  /// Get all blocks below the specified block by a list.
+  /// (en) Gets the block with the specified serial and its child blocks all at once.
   ///
-  /// * [serial] : The target block serial. The return blocks of top index is target serial block.
+  /// (ja) 指定シリアルを持つブロックと、その子ブロックをまとめて取得します。
+  ///
+  /// * [serial] : The target block serial.
+  /// The return blocks of top index is target serial block.
   ///
   /// Throws [EnumSpBMLExceptionType.nonExistSerialException]
   List<SpBMLBlock> getUnderAllBlocks(int serial) {
@@ -344,7 +363,9 @@ class SpBMLBuilder {
     return blockRef;
   }
 
-  /// Loads the contents from the SpBML.
+  /// (en) Loads the contents from the SpBML.
+  ///
+  /// (ja) SpBML からコンテンツを読み込みます。
   ///
   /// * [src] : The SpBML.
   void loadFromSpBML(String src) {
@@ -359,8 +380,13 @@ class SpBMLBuilder {
     _maxSerial = _blockMap.length - 1;
   }
 
-  /// Loads the contents from the list of blocks.
-  /// The block nesting level and serial number are reconstructed with the first block as 0.
+  /// (en) Loads the contents from the list of blocks.
+  /// The block nesting level and serial number are reconstructed
+  /// with the first block as 0.
+  ///
+  /// (ja) ブロックのリストからコンテンツをロードします。
+  /// ブロックのネストレベルとシリアル番号が再構築されます
+  /// 最初のブロックを 0 として扱います。
   ///
   /// * [src] : The SpBMLBlocks get from getUnderAllBlocks.
   void loadFromBlockList(List<SpBMLBlock> src) {
@@ -389,12 +415,18 @@ class SpBMLBuilder {
     }
   }
 
-  /// Returns a list of blocks.
+  /// (en) Returns a list of blocks.
+  /// Please note that the order of blocks is undefined with this method.
+  ///
+  /// (ja) ブロックのリストを取得します。
+  /// このメソッドではブロックの順番は不定になるため注意してください。
   List<SpBMLBlock> getBlockList() {
     return List.from(_blockMap.values);
   }
 
-  /// Returns raw block map.
+  /// (en) Returns raw block map.
+  ///
+  /// (ja) このクラスで管理されているブロックのマップを返します。
   Map<int, SpBMLBlock> getBlockMap() {
     return _blockMap;
   }
@@ -416,8 +448,9 @@ class SpBMLBuilder {
     }
   }
 
-  /// Builds and returns SpBML text.
+  /// (en) Builds and returns SpBML text.
   ///
+  /// (ja) SpBMLとしてビルドしたテキストを返します。
   String build() {
     List<String> r = [];
     _build(-1, r);
