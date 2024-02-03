@@ -1,3 +1,9 @@
+## 3.1.0
+
+* Added childrenIndex optional parameter to the set method in SpBMLBuilder.
+* Added replace method to SpBMLBuilder.
+* Performed SpBMLBuilder refactoring.
+
 ## 3.0.0
 
 * The behavior of getUnderAllBlocks in SpBMLBuilder has changed and the return value is no longer a

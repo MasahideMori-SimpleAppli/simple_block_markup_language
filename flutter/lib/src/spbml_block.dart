@@ -27,6 +27,8 @@ class SpBMLBlock {
   /// * [serial] : The block serial number. The value is 0 or over.
   /// This value is not permanent as it is automatically set in the order
   /// in which it was parsed.
+  /// Note that this number is independent of the order of the blocks
+  /// in the text.
   /// * [parentSerial] : The parent block serial number.
   /// If parent is root, this is -1. If root, this is -2.
   /// * [nestLevel] : The block nest level. If root, this is -1.

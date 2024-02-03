@@ -110,4 +110,26 @@ void main() {
       expect(e is SpBMLException, true);
     }
   });
+
+  test('SpBMLBuilder replace test', () {
+    const String src = "(a)aaa\n"
+        "+(b,key1:abc,key2:def)bbb\n"
+        "ccc\n"
+        "(esc)(d)ddd\n"
+        "+(e)eee\n"
+        "++(f)fff\n"
+        "(g)ggg";
+    // 等価生成テスト
+    SpBMLBuilder builder = SpBMLBuilder();
+    builder.loadFromSpBML(src);
+    SpBMLBlock target =
+        UtilSpBMLSearch.blockType(builder.getBlockList(), ["b"])!.first;
+    builder.replace(target.serial, "h", {}, "replaced");
+    const String checkReplaced = "(a)aaa\n"
+        "+(h)replaced\n"
+        "+(e)eee\n"
+        "++(f)fff\n"
+        "(g)ggg";
+    expect(builder.build() == checkReplaced, true);
+  });
 }
