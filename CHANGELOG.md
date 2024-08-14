@@ -1,3 +1,7 @@
+## 3.2.0
+
+* Added haveSameParams method to SpBMLBlock.
+
 ## 3.1.0
 
 * Added childrenIndex optional parameter to the set method in SpBMLBuilder.

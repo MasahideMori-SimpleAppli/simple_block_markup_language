@@ -142,4 +142,21 @@ class SpBMLBlock {
     }
     return r;
   }
+
+  /// (en) Returns true if other block has the same parameters as this block.
+  /// This method is limited to comparing only the params.
+  ///
+  /// (ja) 他のブロックがこのブロックと同一のパラメータを持っている場合はtrueを返します。
+  /// このメソッドで比較されるのはparamsのみに限定されます。
+  bool haveSameParams(SpBMLBlock other) {
+    if (params.length != other.params.length) {
+      return false;
+    }
+    for (String key in params.keys) {
+      if (!other.params.containsKey(key) || params[key] != other.params[key]) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
