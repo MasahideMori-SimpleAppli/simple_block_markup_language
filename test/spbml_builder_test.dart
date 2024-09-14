@@ -132,4 +132,39 @@ void main() {
         "(g)ggg";
     expect(builder.build() == checkReplaced, true);
   });
+
+  test('SpBMLBuilder loadFromSpBML and build test', () {
+    const String src = "(a)aaa\n"
+        "(b)bbb\nbbb\n"
+        "(c)\n"
+        "(d)\nddd\n"
+        "(e)eee\n\n"
+        "(f)fff\n\nfff\n"
+        "(g)\n\n"
+        "(h)\n\nhhh";
+    // Build後に改行コードの数が想定どおりかどうかをテスト
+    SpBMLBuilder builder = SpBMLBuilder();
+    builder.loadFromSpBML(src);
+    for (SpBMLBlock i in builder.getBlockList()) {
+      if (i.type == "a") {
+        expect(i.content == "aaa", true);
+      } else if (i.type == "b") {
+        expect(i.content == "bbb\nbbb", true);
+      } else if (i.type == "c") {
+        expect(i.content == "", true);
+      } else if (i.type == "d") {
+        expect(i.content == "\nddd", true);
+      } else if (i.type == "e") {
+        expect(i.content == "eee\n", true);
+      } else if (i.type == "f") {
+        expect(i.content == "fff\n\nfff", true);
+      } else if (i.type == "g") {
+        expect(i.content == "\n", true);
+      } else if (i.type == "h") {
+        expect(i.content == "\n\nhhh", true);
+      }
+    }
+    final String spbml = builder.build();
+    expect(spbml, src);
+  });
 }

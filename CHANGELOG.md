@@ -1,3 +1,10 @@
+## 3.2.1
+
+* Added UtilSpBMLLine class.
+* Fixed a bug in SpBMLBlock's toSpBML(). With this fix, content that contains only line breaks is now converted correctly.
+* Related to the above, the behavior of the build method of SpBMLBuilder has also been corrected.
+* SpBMLParser also no longer uses LineSplitter, so its behavior will change slightly.
+
 ## 3.2.0
 
 * Added haveSameParams method to SpBMLBlock.

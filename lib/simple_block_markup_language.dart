@@ -6,4 +6,5 @@ export 'src/spbml_exception.dart';
 export 'src/spbml_parser.dart';
 export 'src/spbml_search_param.dart';
 export 'src/spbml_searcher.dart';
+export 'src/util_spbml_line.dart';
 export 'src/util_spbml_search.dart';

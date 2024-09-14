@@ -1,7 +1,4 @@
-import 'dart:convert';
-
-import 'spbml_block.dart';
-import 'spbml_exception.dart';
+import 'package:simple_block_markup_language/simple_block_markup_language.dart';
 
 ///
 /// Parser of Simple Block Markup Language.
@@ -51,13 +48,13 @@ class SpBMLParser {
   /// Throws [SpBMLException] : If the structure is incorrect.
   static List<SpBMLBlock> run(String src, {bool isGraphMode = false}) {
     // 改行単位で区切り、コメント行を除去してエレメント行を汎用クラスで返す。
-    List<String> splited = const LineSplitter().convert(src);
+    List<String> splitted = UtilSpBMLLine.split(src);
     List<SpBMLBlock> r = [];
     int nowLine = 0;
     int serial = 0;
     // 基底のColのシリアルは-1。
     List<int> nowParentSerial = [-1];
-    for (String line in splited) {
+    for (String line in splitted) {
       nowLine += 1;
       // コメント行なら無視
       if (line.startsWith(commentCode)) {

@@ -1,6 +1,4 @@
-import 'dart:convert';
-
-import 'spbml_parser.dart';
+import 'package:simple_block_markup_language/simple_block_markup_language.dart';
 
 ///
 /// Block of Simple Block Markup Language.
@@ -118,7 +116,8 @@ class SpBMLBlock {
   List<String> toSpBML() {
     List<String> r = [];
     // 最初のパラメータ込みの行を作成する。
-    List<String> contentLines = const LineSplitter().convert(content);
+    // LineSplitterは行末が複数の改行だと無視してしまうので使用しない。
+    final List<String> contentLines = UtilSpBMLLine.split(content);
     String firstLine = _getNestCode() + SpBMLParser.paramStart + type;
     for (String i in params.keys) {
       firstLine += SpBMLParser.paramSeparate;
@@ -127,6 +126,7 @@ class SpBMLBlock {
       firstLine += _escape(params[i]!);
     }
     firstLine += SpBMLParser.paramEnd;
+    // 1行目のコンテントテキストがあれば追加する。
     if (contentLines.isNotEmpty) {
       firstLine += contentLines.removeAt(0);
     }
