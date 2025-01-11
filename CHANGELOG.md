@@ -1,3 +1,7 @@
+## 3.2.2
+
+* Updated doc text.
+
 ## 3.2.1
 
 * Added UtilSpBMLLine class.

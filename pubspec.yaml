@@ -1,6 +1,6 @@
 name: simple_block_markup_language
 description: A simple markup language that describes block elements in an easy-to-see format.
-version: 3.2.1
+version: 3.2.2
 repository: https://github.com/MasahideMori-SimpleAppli/simple_block_markup_language
 
 environment:
@@ -14,4 +14,4 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
